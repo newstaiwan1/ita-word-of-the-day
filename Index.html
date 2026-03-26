@@ -45,7 +45,6 @@
       font-size: clamp(1.6rem, 5vw, 2.4rem);
       font-weight: 700;
       letter-spacing: -0.5px;
-      color: var(--ink);
     }
 
     header .subtitle {
@@ -85,10 +84,6 @@
       margin-bottom: 1.5rem;
     }
 
-    .word-section {
-      margin-bottom: 1.5rem;
-    }
-
     .pos-badge {
       display: inline-block;
       font-size: 0.72rem;
@@ -107,7 +102,6 @@
       font-size: clamp(2.4rem, 8vw, 3.5rem);
       font-weight: 700;
       line-height: 1;
-      color: var(--ink);
       letter-spacing: -1px;
     }
 
@@ -137,7 +131,6 @@
     .definition {
       font-size: 1.05rem;
       line-height: 1.65;
-      color: var(--ink);
     }
 
     .example {
@@ -149,16 +142,6 @@
       padding-left: 1rem;
       border-left: 2px solid var(--gold);
     }
-
-    .loading, .error {
-      font-size: 0.95rem;
-      color: var(--muted);
-      font-style: italic;
-      padding: 1rem 0;
-      text-align: center;
-    }
-
-    .error { color: var(--terracotta); }
 
     .actions {
       display: flex;
@@ -175,7 +158,7 @@
       border-radius: 8px;
       border: none;
       cursor: pointer;
-      transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s;
+      transition: transform 0.15s ease, opacity 0.15s;
       letter-spacing: 0.02em;
     }
 
@@ -187,7 +170,7 @@
       box-shadow: 0 2px 10px rgba(200,85,61,0.25);
     }
 
-    .btn-primary:hover { opacity: 0.88; box-shadow: 0 4px 16px rgba(200,85,61,0.3); }
+    .btn-primary:hover { opacity: 0.88; }
 
     .btn-secondary {
       background: transparent;
@@ -215,9 +198,7 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    .fade-in {
-      animation: fadeUp 0.45s ease both;
-    }
+    .fade-in { animation: fadeUp 0.45s ease both; }
   </style>
 </head>
 <body>
@@ -228,135 +209,117 @@
     <p class="subtitle">Italian Word of the Day</p>
   </header>
 
-  <div class="card" id="card">
+  <div class="card">
     <div class="date-badge" id="dateBadge"></div>
-    <div id="content"><p class="loading">Loading today's word…</p></div>
+    <div id="content"></div>
     <div class="actions">
       <button class="btn-primary" onclick="loadRandom()">🎲 Random Word</button>
       <button class="btn-secondary" onclick="loadToday()">📅 Today's Word</button>
     </div>
   </div>
 
-  <footer>Powered by Free Dictionary API &mdash; italiano-insieme.eu</footer>
+  <footer>italiano-insieme.eu</footer>
 
   <script>
-    // ── Word list (B1-B2 Italian vocabulary) ──────────────────────────────────
+    // ── Curated word list (B1-B2) ─────────────────────────────────────────────
+    // To add more words: copy any line and fill in word, pos, phonetic, definition, example
     const wordList = [
-      "temere","sperare","fingere","cedere","cogliere","affrontare","condividere",
-      "raggiungere","risolvere","promettere","ricordare","dimenticare","costruire",
-      "distruggere","superare","scegliere","rinunciare","pretendere","accettare",
-      "rifiutare","ammettere","negare","sostenere","abbandonare","attraversare",
-      "nascondere","scoprire","convincere","dubitare","credere","immaginare",
-      "realizzare","proteggere","riconoscere","sfidare","rispettare","tradire",
-      "perdonare","consigliare","lamentarsi","esagerare","improvvisare","affascinare",
-      "deludere","meravigliarsi","vergognarsi","fidarsi","arrabbiarsi","innamorarsi"
+      { word: "temere",        pos: "verb",       phonetic: "te-mé-re",          definition: "To fear or be afraid of something or someone.",                                      example: "Temo che sia troppo tardi. — I fear it's too late." },
+      { word: "sperare",       pos: "verb",       phonetic: "spe-rá-re",         definition: "To hope for something desired or expected.",                                         example: "Spero che tu stia bene. — I hope you are well." },
+      { word: "fingere",       pos: "verb",       phonetic: "fín-ge-re",         definition: "To pretend or fake something.",                                                      example: "Stava fingendo di dormire. — He was pretending to sleep." },
+      { word: "cedere",        pos: "verb",       phonetic: "cé-de-re",          definition: "To give in, surrender, or yield to something.",                                     example: "Non cedere alla pressione. — Don't give in to pressure." },
+      { word: "cogliere",      pos: "verb",       phonetic: "cò-glie-re",        definition: "To seize or take advantage of a moment or opportunity.",                           example: "Ha colto l'occasione al volo. — He seized the opportunity." },
+      { word: "affrontare",    pos: "verb",       phonetic: "af-fron-tá-re",     definition: "To face or deal with a problem or difficult situation.",                           example: "Dobbiamo affrontare il problema insieme. — We must face the problem together." },
+      { word: "condividere",   pos: "verb",       phonetic: "con-di-ví-de-re",   definition: "To share something with others.",                                                   example: "Vuoi condividere le tue idee? — Do you want to share your ideas?" },
+      { word: "raggiungere",   pos: "verb",       phonetic: "rag-giún-ge-re",    definition: "To reach, achieve, or catch up with someone or something.",                        example: "Ha raggiunto il suo obiettivo. — She reached her goal." },
+      { word: "risolvere",     pos: "verb",       phonetic: "ri-sól-ve-re",      definition: "To solve or resolve a problem.",                                                    example: "Riusciamo a risolvere questo? — Can we solve this?" },
+      { word: "promettere",    pos: "verb",       phonetic: "pro-mét-te-re",     definition: "To promise something to someone.",                                                  example: "Ti prometto che tornerò. — I promise I will come back." },
+      { word: "ricordare",     pos: "verb",       phonetic: "ri-cor-dá-re",      definition: "To remember or remind someone of something.",                                      example: "Ricordi il primo giorno di scuola? — Do you remember the first day of school?" },
+      { word: "dimenticare",   pos: "verb",       phonetic: "di-men-ti-cá-re",   definition: "To forget something or someone.",                                                   example: "Ho dimenticato le chiavi a casa. — I forgot the keys at home." },
+      { word: "costruire",     pos: "verb",       phonetic: "co-struí-re",       definition: "To build or construct something.",                                                  example: "Vogliono costruire un ponte nuovo. — They want to build a new bridge." },
+      { word: "superare",      pos: "verb",       phonetic: "su-pe-rá-re",       definition: "To overcome, exceed, or get past something.",                                      example: "Ha superato l'esame con ottimi voti. — She passed the exam with excellent grades." },
+      { word: "scegliere",     pos: "verb",       phonetic: "scé-glie-re",       definition: "To choose or select between options.",                                              example: "È difficile scegliere tra le due. — It's hard to choose between the two." },
+      { word: "rinunciare",    pos: "verb",       phonetic: "ri-nun-ciá-re",     definition: "To give up or renounce something.",                                                 example: "Non voglio rinunciare ai miei sogni. — I don't want to give up my dreams." },
+      { word: "accettare",     pos: "verb",       phonetic: "ac-cet-tá-re",      definition: "To accept or agree to something.",                                                  example: "Ha accettato l'offerta di lavoro. — He accepted the job offer." },
+      { word: "rifiutare",     pos: "verb",       phonetic: "ri-fiu-tá-re",      definition: "To refuse or reject something.",                                                    example: "Ha rifiutato l'invito alla festa. — She refused the party invitation." },
+      { word: "ammettere",     pos: "verb",       phonetic: "am-mét-te-re",      definition: "To admit or acknowledge something, often a mistake.",                              example: "Devi ammettere i tuoi errori. — You must admit your mistakes." },
+      { word: "sostenere",     pos: "verb",       phonetic: "so-ste-né-re",      definition: "To support, maintain, or uphold someone or something.",                           example: "Ti sosterrò sempre. — I will always support you." },
+      { word: "abbandonare",   pos: "verb",       phonetic: "ab-ban-do-ná-re",   definition: "To abandon or leave behind a person or place.",                                    example: "Non abbandonare mai i tuoi amici. — Never abandon your friends." },
+      { word: "nascondere",    pos: "verb",       phonetic: "na-scón-de-re",     definition: "To hide something or keep it secret.",                                              example: "Dove hai nascosto le chiavi? — Where did you hide the keys?" },
+      { word: "scoprire",      pos: "verb",       phonetic: "sco-prí-re",        definition: "To discover or uncover something unknown.",                                         example: "Ho scoperto un ristorante fantastico. — I discovered a fantastic restaurant." },
+      { word: "convincere",    pos: "verb",       phonetic: "con-vín-ce-re",     definition: "To convince or persuade someone of something.",                                    example: "Riesci a convincerlo? — Can you convince him?" },
+      { word: "dubitare",      pos: "verb",       phonetic: "du-bi-tá-re",       definition: "To doubt or be uncertain about something.",                                         example: "Non dubito delle tue capacità. — I don't doubt your abilities." },
+      { word: "immaginare",    pos: "verb",       phonetic: "im-ma-gi-ná-re",    definition: "To imagine or picture something in your mind.",                                    example: "Immagina un mondo senza guerre. — Imagine a world without wars." },
+      { word: "realizzare",    pos: "verb",       phonetic: "re-a-liz-zá-re",    definition: "To make something happen; also to suddenly understand.",                           example: "Ha realizzato il suo sogno. — He made his dream a reality." },
+      { word: "proteggere",    pos: "verb",       phonetic: "pro-tég-ge-re",     definition: "To protect or defend someone or something from harm.",                             example: "Dobbiamo proteggere l'ambiente. — We must protect the environment." },
+      { word: "riconoscere",   pos: "verb",       phonetic: "ri-co-nó-sce-re",   definition: "To recognize someone; to acknowledge a fact.",                                     example: "L'ho riconosciuto subito. — I recognized him immediately." },
+      { word: "sfidare",       pos: "verb",       phonetic: "sfi-dá-re",         definition: "To challenge someone or dare to do something.",                                     example: "Ti sfido a battere il mio record. — I challenge you to beat my record." },
+      { word: "rispettare",    pos: "verb",       phonetic: "ri-spet-tá-re",     definition: "To respect or show regard for someone or a rule.",                                example: "Bisogna rispettare le regole. — We must respect the rules." },
+      { word: "tradire",       pos: "verb",       phonetic: "tra-dí-re",         definition: "To betray someone's trust.",                                                        example: "Non tradire mai la fiducia degli altri. — Never betray others' trust." },
+      { word: "perdonare",     pos: "verb",       phonetic: "per-do-ná-re",      definition: "To forgive someone for a wrong they have done.",                                   example: "Riesci a perdonarmi? — Can you forgive me?" },
+      { word: "consigliare",   pos: "verb",       phonetic: "con-si-gliá-re",    definition: "To advise or recommend something to someone.",                                     example: "Ti consiglio di studiare ogni giorno. — I advise you to study every day." },
+      { word: "lamentarsi",    pos: "verb",       phonetic: "la-men-tár-si",     definition: "To complain or moan about something.",                                              example: "Si lamenta sempre del lavoro. — He always complains about work." },
+      { word: "esagerare",     pos: "verb",       phonetic: "e-sa-ge-rá-re",     definition: "To exaggerate or overstate something.",                                             example: "Stai esagerando! — You are exaggerating!" },
+      { word: "affascinare",   pos: "verb",       phonetic: "af-fa-sci-ná-re",   definition: "To fascinate or charm someone greatly.",                                           example: "La cultura italiana mi affascina. — Italian culture fascinates me." },
+      { word: "deludere",      pos: "verb",       phonetic: "de-lú-de-re",       definition: "To disappoint or let someone down.",                                                example: "Non voglio deluderti. — I don't want to disappoint you." },
+      { word: "meravigliarsi", pos: "verb",       phonetic: "me-ra-vi-gliár-si", definition: "To be amazed or astonished by something.",                                         example: "Mi meraviglio sempre della sua pazienza. — I'm always amazed by her patience." },
+      { word: "vergognarsi",   pos: "verb",       phonetic: "ver-go-gnár-si",    definition: "To feel ashamed or embarrassed about something.",                                  example: "Non ti vergognare degli errori. — Don't be ashamed of your mistakes." },
+      { word: "fidarsi",       pos: "verb",       phonetic: "fi-dár-si",         definition: "To trust someone or rely on them.",                                                 example: "Mi fido completamente di te. — I trust you completely." },
+      { word: "arrabbiarsi",   pos: "verb",       phonetic: "ar-rab-biár-si",    definition: "To get angry or lose one's temper.",                                                example: "Non arrabbiarti per così poco! — Don't get angry over so little!" },
+      { word: "innamorarsi",   pos: "verb",       phonetic: "in-na-mo-rár-si",   definition: "To fall in love with someone.",                                                     example: "Si è innamorato di lei al primo sguardo. — He fell in love with her at first sight." },
+      { word: "coraggio",      pos: "noun (m)",   phonetic: "co-rág-gio",        definition: "Courage; the strength to face fear or difficulty.",                                example: "Ci vuole coraggio per cambiare vita. — It takes courage to change your life." },
+      { word: "fiducia",       pos: "noun (f)",   phonetic: "fi-dú-cia",         definition: "Trust or confidence in someone or something.",                                     example: "Ho molta fiducia in te. — I have a lot of trust in you." },
+      { word: "pazienza",      pos: "noun (f)",   phonetic: "pa-ziénza",         definition: "Patience; the ability to wait calmly.",                                            example: "La pazienza è una virtù. — Patience is a virtue." },
+      { word: "consapevole",   pos: "adjective",  phonetic: "con-sa-pé-vo-le",   definition: "Aware or conscious of something.",                                                 example: "È consapevole dei suoi limiti. — He is aware of his limits." },
+      { word: "ingenuo",       pos: "adjective",  phonetic: "in-gé-nuo",         definition: "Naive or overly trusting; lacking worldly experience.",                           example: "Non essere così ingenuo! — Don't be so naive!" },
+      { word: "ostinato",      pos: "adjective",  phonetic: "o-sti-ná-to",       definition: "Stubborn or persistent; unwilling to change.",                                     example: "È troppo ostinato per ascoltare. — He's too stubborn to listen." },
+      { word: "curioso",       pos: "adjective",  phonetic: "cu-rió-so",         definition: "Curious or eager to know and learn.",                                              example: "I bambini sono naturalmente curiosi. — Children are naturally curious." },
     ];
 
     // ── Date seed: same word for everyone on the same day ────────────────────
     function getDayIndex() {
       const now = new Date();
       const start = new Date(now.getFullYear(), 0, 0);
-      const diff = now - start;
-      const oneDay = 1000 * 60 * 60 * 24;
-      return Math.floor(diff / oneDay);
+      return Math.floor((now - start) / 86400000);
     }
 
-    function getTodayWord() {
-      return wordList[getDayIndex() % wordList.length];
-    }
-
-    // ── Format today's date nicely ───────────────────────────────────────────
     function formatDate() {
       return new Date().toLocaleDateString('en-GB', {
         weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
       });
     }
 
-    // ── Fetch from Free Dictionary API ───────────────────────────────────────
-    async function fetchWord(word) {
-      const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/it/${word}`);
-      if (!res.ok) throw new Error('API error');
-      const data = await res.json();
-      return data[0];
-    }
-
-    // ── Render the card content ───────────────────────────────────────────────
-    function render(data, word) {
-      const meanings = data.meanings || [];
-      const firstMeaning = meanings[0] || {};
-      const pos = firstMeaning.partOfSpeech || '';
-      const defs = firstMeaning.definitions || [];
-      const definition = defs[0]?.definition || 'No definition available.';
-      const example = defs[0]?.example || '';
-
-      // Phonetic
-      const phonetics = data.phonetics || [];
-      const phonetic = phonetics.find(p => p.text)?.text || '';
-
-      let html = `
-        <div class="word-section fade-in">
-          ${pos ? `<span class="pos-badge">${pos}</span>` : ''}
-          <div class="word">${data.word || word}</div>
-          ${phonetic ? `<div class="phonetic">${phonetic}</div>` : ''}
+    // ── Render ────────────────────────────────────────────────────────────────
+    function render(entry) {
+      document.getElementById('content').innerHTML = `
+        <div class="fade-in">
+          <span class="pos-badge">${entry.pos}</span>
+          <div class="word">${entry.word}</div>
+          <div class="phonetic">${entry.phonetic}</div>
         </div>
         <hr class="divider"/>
         <div class="fade-in">
           <p class="section-label">Definition</p>
-          <p class="definition">${definition}</p>
-        </div>
-      `;
-
-      if (example) {
-        html += `
-          <hr class="divider"/>
-          <div class="fade-in">
-            <p class="section-label">Example</p>
-            <p class="example">"${example}"</p>
-          </div>
-        `;
-      }
-
-      document.getElementById('content').innerHTML = html;
-    }
-
-    // ── Render fallback when API fails ────────────────────────────────────────
-    function renderFallback(word) {
-      document.getElementById('content').innerHTML = `
-        <div class="word-section fade-in">
-          <div class="word">${word}</div>
+          <p class="definition">${entry.definition}</p>
         </div>
         <hr class="divider"/>
-        <p class="error">Couldn't load definition right now.<br>Look this word up and come back tomorrow! 🇮🇹</p>
+        <div class="fade-in">
+          <p class="section-label">Example</p>
+          <p class="example">${entry.example}</p>
+        </div>
       `;
     }
 
-    // ── Load today's word ─────────────────────────────────────────────────────
-    async function loadToday() {
+    function loadToday() {
       document.getElementById('dateBadge').textContent = formatDate();
-      document.getElementById('content').innerHTML = '<p class="loading">Loading…</p>';
-      const word = getTodayWord();
-      try {
-        const data = await fetchWord(word);
-        render(data, word);
-      } catch {
-        renderFallback(word);
-      }
+      render(wordList[getDayIndex() % wordList.length]);
     }
 
-    // ── Load a random word ────────────────────────────────────────────────────
-    async function loadRandom() {
+    function loadRandom() {
       document.getElementById('dateBadge').textContent = '🎲 Random pick';
-      document.getElementById('content').innerHTML = '<p class="loading">Loading…</p>';
-      const word = wordList[Math.floor(Math.random() * wordList.length)];
-      try {
-        const data = await fetchWord(word);
-        render(data, word);
-      } catch {
-        renderFallback(word);
-      }
+      render(wordList[Math.floor(Math.random() * wordList.length)]);
     }
 
-    // ── Init ──────────────────────────────────────────────────────────────────
     loadToday();
   </script>
 </body>
